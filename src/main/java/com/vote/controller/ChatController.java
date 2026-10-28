@@ -33,16 +33,15 @@ public class ChatController {
      */
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream(@RequestParam(value = "token", required = false) String token) {
-        String username = null;
+        User me = null;
         if (token != null && !token.isEmpty() && jwtUtils.validateToken(token)) {
-            username = jwtUtils.extractUsername(token);
+            // 与 JwtAuthenticationFilter 保持一致：优先用 uid 定位用户。
+            // 若按 subject（用户名）查，用户改名后旧 token 就查不到人，SSE 会一直连不上。
+            me = userService.findById(jwtUtils.extractUserId(token));
+            if (me == null) {
+                me = userService.findByUsername(jwtUtils.extractUsername(token));
+            }
         }
-        if (username == null) {
-            SseEmitter denied = new SseEmitter(1000L);
-            denied.completeWithError(new RuntimeException("unauthorized"));
-            return denied;
-        }
-        User me = userService.findByUsername(username);
         if (me == null) {
             SseEmitter denied = new SseEmitter(1000L);
             denied.completeWithError(new RuntimeException("unauthorized"));
