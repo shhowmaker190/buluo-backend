@@ -42,6 +42,14 @@
 
 ---
 
+## 界面
+
+接口跑通后，用前端页面看到的效果（数据来自 `sql/seed.sql`）：
+
+| 首页：帖子列表 / 热门部落 / 签到 | 后台：待审帖子队列 |
+|---|---|
+| ![首页](docs/screenshots/home.png) | ![后台](docs/screenshots/admin.png) |
+
 ## 技术栈
 
 | 层 | 选型 | 用途 |
@@ -579,15 +587,3 @@ public SseEmitter stream(@RequestParam(required = false) String token) {
 3. 单体应用：没有消息队列，通知靠线程池异步；图片存本地磁盘，没有对象存储；
 4. 分页是 `LIMIT offset`，数据量大时深分页会变慢，需要改游标分页；
 5. AI 依赖外部免费接口时响应不稳定，事实性内容可能不准（已用本地知识库兜底）。
-
----
-
-## 截图
-
-<!-- 截图放 docs/screenshots/ 下，然后把下面注释里的表格取消注释 -->
-
-<!--
-| 帖子列表 | 后台审核 |
-|---|---|
-| ![列表](docs/screenshots/home.png) | ![后台](docs/screenshots/admin.png) |
--->
