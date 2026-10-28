@@ -24,7 +24,10 @@ public class AuthController {
     @PostMapping("/register")
     public Result<?> register(@RequestBody RegisterRequest req) {
         if (userService.findByUsername(req.getUsername()) != null) return Result.error("用户名已存在");
-        boolean success = userService.register(req.getUsername(), req.getPassword(), req.getEmail(), req.getRoleCode());
+        // 角色一律由服务端决定：忽略客户端传入的 roleCode，
+        // 否则任何人只要发 roleCode=ADMIN 就能自助注册成管理员（越权）。
+        // 管理员账号只能由 DBA / 迁移脚本设置。
+        boolean success = userService.register(req.getUsername(), req.getPassword(), req.getEmail(), "USER");
         return success ? Result.success("注册成功") : Result.error("注册失败");
     }
 

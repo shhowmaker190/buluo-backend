@@ -41,8 +41,6 @@ uploads/
 sql/backup_before_*.sql
 tools/
 
-# 本地个人文档（不入库）
-简历*.md
-面试*.md
-*手册.md
-项目结构详解.md
+# 根目录只提交 README，其余说明类文档留在本地
+/*.md
+!/README.md
