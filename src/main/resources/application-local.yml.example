@@ -1,0 +1,12 @@
+# 模板文件：复制为 application-local.yml 后填入自己的真实值。
+# application-local.yml 已被 .gitignore 忽略，不会被提交。
+#
+#   cp src/main/resources/application-local.yml.example src/main/resources/application-local.yml
+#
+spring:
+  datasource:
+    # 本地 MySQL 的 root 密码
+    password: 你的数据库密码
+jwt:
+  # Base64 字符串，随便换一个自己的；换了之后已登录的 token 会失效
+  secret: 你的Base64密钥

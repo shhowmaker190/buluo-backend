@@ -1,0 +1,101 @@
+server:
+  port: 8080
+spring:
+  # 本地私有配置（数据库密码、JWT 密钥等）放在 application-local.yml，该文件不进版本库。
+  # 仓库里只保留 application-local.yml.example 作为模板。
+  config:
+    import: optional:classpath:application-local.yml
+  datasource:
+    url: jdbc:mysql://localhost:3306/vote_db?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8
+    username: root
+    # 真实密码从环境变量 DB_PASSWORD 或 application-local.yml 读取，默认值仅用于本地演示
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      # 需大于 app.upload.max-*-size，否则请求会被容器直接拒掉
+      max-file-size: 20MB
+      max-request-size: 40MB
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: your-email@qq.com
+    password: your-authorization-code
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  # Redis 缓存：连不上会自动降级到本地内存缓存，不影响启动
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+management:
+  health:
+    mail:
+      enabled: false
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+  mapper-locations: classpath*:/mapper/**/*.xml
+jwt:
+  # 生产环境务必通过环境变量 JWT_SECRET 注入，默认值只用于本地开发
+  secret: ${JWT_SECRET:ZGV2LW9ubHktc2VjcmV0LWRvLW5vdC11c2UtaW4tcHJvZA==}
+  expiration: 86400000
+app:
+  base-url: http://localhost:5173
+  # 缓存开关：redis.enabled=false 时只用本地内存缓存（无 Redis 也能跑）
+  cache:
+    redis:
+      enabled: ${CACHE_REDIS_ENABLED:true}
+  # 相对路径会以进程工作目录为基准解析；部署时建议改成绝对路径，如 D:/vote-data/uploads
+  upload-path: uploads
+  upload:
+    max-avatar-size: 10485760   # 头像上限 10MB
+    max-image-size: 10485760    # 正文图片上限 10MB
+    avatar-max-width: 512       # 头像裁剪为正方形后的边长
+    image-max-width: 1280       # 正文图片最大宽度，按比例缩放
+    quality: 0.8                # JPEG 压缩质量 0.1~1.0
+
+# AI 小助手。回答按三级降级：DeepSeek（有 Key 才用）→ 免费 AI → 本地知识库。
+# 默认不需要任何 Key 也能用：走免费的 Pollinations OpenAI 兼容接口（有速率限制）。
+# 想要更稳更聪明，再用环境变量 DEEPSEEK_API_KEY=sk-xxxx 开启 DeepSeek（按 token 计费）。
+ai:
+  deepseek:
+    api-key: ${DEEPSEEK_API_KEY:}
+    base-url: https://api.deepseek.com
+    model: deepseek-chat
+  free:
+    enabled: true
+    # Pollinations 的 OpenAI 兼容接口：匿名额度「每 30 秒 1 条回答」，命中限制会自动降级到本地知识库
+    base-url: https://text.pollinations.ai
+    model: openai-fast
+    referrer: buluo-chat
+  # 可选：本机 Ollama（完全免费、无限量、不走外网）。装了 Ollama 再改成 true：
+  #   ollama pull qwen2.5:1.5b   → ai.ollama.enabled: true
+  ollama:
+    enabled: false
+    base-url: http://localhost:11434/v1
+    model: qwen2.5:1.5b
+  # 可选：智谱 GLM-4-Flash（注册即免费，模型本身不收费），配了 key 会优先于免费接口
+  # 申请地址 https://open.bigmodel.cn ，然后设置环境变量 ZHIPU_API_KEY
+  zhipu:
+    api-key: ${ZHIPU_API_KEY:}
+    base-url: https://open.bigmodel.cn/api/paas/v4
+    model: glm-4-flash

@@ -1,0 +1,48 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### 本地私有配置与用户上传文件（不入库）###
+src/main/resources/application-local.yml
+src/main/resources/application.yml.bak-*
+uploads/
+
+### 含真实数据或不适合入库的文件 ###
+sql/backup_before_*.sql
+tools/
+
+# 本地个人文档（不入库）
+简历*.md
+面试*.md
+*手册.md
+项目结构详解.md
