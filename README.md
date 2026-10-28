@@ -1,7 +1,7 @@
 # 部落闲聊 · 兴趣部落社区系统（后端）
 
 基于 Spring Boot 3 的社区后端：部落、帖子、评论、私聊、好友、签到等级、内容审核与后台管理。
-前端 Vue 3 仓库：[vote-frontend](https://github.com/你的用户名/vote-frontend)；微信小程序端为同一后端的另一个渲染层。
+前端 Vue 3 仓库：[vote-frontend](https://github.com/shhowmaker190/vote-frontend)；微信小程序端为同一后端的另一个渲染层。
 
 ## 技术栈
 
